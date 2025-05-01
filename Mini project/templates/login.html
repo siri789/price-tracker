@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Login - Price Predictor</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <style>
+        .login-box {
+            max-width: 400px;
+            margin: 60px auto;
+            padding: 30px;
+            background: var(--card);
+            border-radius: 12px;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+            animation: fadeIn 0.7s ease;
+        }
+
+        .login-box h2 {
+            text-align: center;
+            margin-bottom: 20px;
+            color: var(--text);
+        }
+
+        .login-box form {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .login-box input[type="email"],
+        .login-box input[type="password"] {
+            padding: 12px 15px;
+            border-radius: 8px;
+            border: 1px solid #ccc;
+            font-size: 16px;
+            background: var(--card);
+            color: var(--text);
+        }
+
+        .login-box input:focus {
+            border-color: var(--accent);
+            outline: none;
+        }
+
+        .login-box button {
+            padding: 12px;
+            background: var(--accent);
+            color: white;
+            font-weight: bold;
+            font-size: 16px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background 0.3s ease;
+        }
+
+        .login-box button:hover {
+            background: #2d83c6;
+        }
+
+        .login-box .error {
+            color: red;
+            text-align: center;
+            margin-top: 10px;
+        }
+
+        .theme-toggle {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to   { opacity: 1; transform: translateY(0); }
+        }
+    </style>
+</head>
+<body>
+    <div class="theme-toggle">
+        <label class="switch">
+            <input type="checkbox" id="modeToggle">
+            <span class="slider"></span>
+        </label>
+    </div>
+
+    <div class="login-box">
+        <h2>🔐 Login</h2>
+        <form method="POST" onsubmit="return validateForm()">
+            <input type="email" name="email" id="email" placeholder="Email Address" required />
+            <input type="password" name="password" id="password" placeholder="Password" required />
+            <button type="submit">Login</button>
+        </form>
+        {% if error %}
+            <div class="error">{{ error }}</div>
+        {% endif %}
+    </div>
+
+    <script>
+        const toggle = document.getElementById('modeToggle');
+        const root = document.documentElement;
+        toggle.addEventListener('change', () => {
+            if (toggle.checked) {
+                root.classList.add('dark-mode');
+                localStorage.setItem('theme', 'dark');
+            } else {
+                root.classList.remove('dark-mode');
+                localStorage.setItem('theme', 'light');
+            }
+        });
+
+        window.addEventListener('DOMContentLoaded', () => {
+            if (localStorage.getItem('theme') === 'dark') {
+                toggle.checked = true;
+                root.classList.add('dark-mode');
+            }
+        });
+
+        function validateForm() {
+            const email = document.getElementById('email').value.trim();
+            const pass = document.getElementById('password').value.trim();
+            if (!email || !pass) {
+                alert("Please enter both email and password.");
+                return false;
+            }
+            return true;
+        }
+    </script>
+</body>
+</html>

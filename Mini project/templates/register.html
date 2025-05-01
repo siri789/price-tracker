@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Register - Price Predictor</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <style>
+        .register-box {
+            max-width: 400px;
+            margin: 60px auto;
+            padding: 30px;
+            background: var(--card);
+            border-radius: 12px;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+            animation: fadeIn 0.7s ease;
+        }
+
+        .register-box h2 {
+            text-align: center;
+            margin-bottom: 20px;
+            color: var(--text);
+        }
+
+        .register-box form {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .register-box input[type="text"],
+        .register-box input[type="email"],
+        .register-box input[type="password"] {
+            padding: 12px 15px;
+            border-radius: 8px;
+            border: 1px solid #ccc;
+            font-size: 16px;
+            background: var(--card);
+            color: var(--text);
+        }
+
+        .register-box input:focus {
+            border-color: var(--accent);
+            outline: none;
+        }
+
+        .register-box button {
+            padding: 12px;
+            background: var(--accent);
+            color: white;
+            font-weight: bold;
+            font-size: 16px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background 0.3s ease;
+        }
+
+        .register-box button:hover {
+            background: #2d83c6;
+        }
+
+        .register-box .error {
+            color: red;
+            text-align: center;
+        }
+
+        .theme-toggle {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to   { opacity: 1; transform: translateY(0); }
+        }
+    </style>
+</head>
+<body>
+    <div class="theme-toggle">
+        <label class="switch">
+            <input type="checkbox" id="modeToggle">
+            <span class="slider"></span>
+        </label>
+    </div>
+
+    <div class="register-box">
+        <h2>📝 Register</h2>
+        {% if error %}
+            <p class="error">{{ error }}</p>
+        {% endif %}
+        <form method="POST">
+            <input type="text" name="name" placeholder="Your Name" required />
+            <input type="email" name="email" placeholder="Email Address" required />
+            <input type="password" name="password" placeholder="Password" required />
+            <input type="password" name="confirm" placeholder="Confirm Password" required />
+            <button type="submit">Create Account</button>
+        </form>
+        <p style="text-align:center; margin-top:10px;">
+            Already have an account? <a href="{{ url_for('login') }}">Login</a>
+        </p>
+    </div>
+
+    <script>
+        const toggle = document.getElementById('modeToggle');
+        const root = document.documentElement;
+        toggle.addEventListener('change', () => {
+            if (toggle.checked) {
+                root.classList.add('dark-mode');
+                localStorage.setItem('theme', 'dark');
+            } else {
+                root.classList.remove('dark-mode');
+                localStorage.setItem('theme', 'light');
+            }
+        });
+
+        window.addEventListener('DOMContentLoaded', () => {
+            if (localStorage.getItem('theme') === 'dark') {
+                toggle.checked = true;
+                root.classList.add('dark-mode');
+            }
+        });
+    </script>
+</body>
+</html>

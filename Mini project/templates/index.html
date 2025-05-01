@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Price Predictor</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <style>
+    .logout-btn {
+      position: absolute;
+      top: 20px;
+      left: 20px;
+      padding: 8px 14px;
+      background-color: #e74c3c;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      font-weight: bold;
+      cursor: pointer;
+      transition: background 0.3s ease;
+    }
+
+    .logout-btn:hover {
+      background-color: #c0392b;
+    }
+
+    h1 span {
+      color: var(--accent);
+    }
+  </style>
+</head>
+<body>
+  <div class="theme-toggle">
+    <label class="switch">
+      <input type="checkbox" id="modeToggle">
+      <span class="slider"></span>
+    </label>
+  </div>
+
+  <a href="{{ url_for('logout') }}">
+    <button class="logout-btn">Logout</button>
+  </a>
+
+  <div class="container">
+    <div style="text-align: center; margin-bottom: 30px;">
+      <img src="{{ url_for('static', filename='logo.png') }}" alt="Smart Price Predictor Logo" style="height: 80px;">
+      <h1 style="margin-top: 10px; font-size: 22px; color: var(--text);">Smart Price Predictor 🛍️</h1>
+    </div>
+    
+    
+    <h1>Welcome, <span>{{ username }}</span> 👋</h1>
+    <h2>Price Tracker & Predictor</h2>
+
+    <form id="priceForm">
+      <input type="text" id="productUrl" placeholder="Enter Amazon product URL" required>
+      <button type="submit">Track Price</button>
+    </form>
+
+    <div id="loadingSpinner" class="hidden">
+      <div class="spinner"></div>
+    </div>
+
+    <div id="result" class="hidden">
+      <h2>Price Analysis</h2>
+      <div id="productTitleContainer" class="hidden">
+        <h3 id="productTitle"></h3>
+      </div>
+      <div id="productImageContainer" class="hidden">
+        <img id="productImage" src="" alt="Product Image" />
+      </div>
+      <canvas id="priceChart"></canvas>
+      <p><strong>Current Price:</strong> ₹<span id="currentPrice"></span></p>
+      <p><strong>Predicted Price (Next Week):</strong> ₹<span id="predictedPrice"></span></p>
+      <p><strong>Suggestion:</strong> <span id="suggestion"></span></p>
+    </div>
+  </div>
+
+  <!-- Scripts -->
+  <script>
+    // 🌙 Dark Mode Toggle
+    const toggle = document.getElementById('modeToggle');
+    const root = document.documentElement;
+    toggle.addEventListener('change', () => {
+      if (toggle.checked) {
+        root.classList.add('dark-mode');
+        localStorage.setItem('theme', 'dark');
+      } else {
+        root.classList.remove('dark-mode');
+        localStorage.setItem('theme', 'light');
+      }
+    });
+
+    window.addEventListener('DOMContentLoaded', () => {
+      if (localStorage.getItem('theme') === 'dark') {
+        toggle.checked = true;
+        root.classList.add('dark-mode');
+      }
+    });
+
+    // Fetch price prediction
+    document.getElementById('priceForm').addEventListener('submit', async function (e) {
+      e.preventDefault();
+
+      const url = document.getElementById('productUrl').value;
+      document.getElementById('loadingSpinner').classList.remove('hidden');
+      document.getElementById('result').classList.add('hidden');
+
+      try {
+        const response = await fetch('/predict', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ url: url })
+        });
+
+        const data = await response.json();
+        document.getElementById('loadingSpinner').classList.add('hidden');
+
+        if (data.error) {
+          alert(data.error);
+          return;
+        }
+
+        document.getElementById('productTitle').textContent = "🛒 " + data.title;
+        document.getElementById('productTitleContainer').classList.remove('hidden');
+        document.getElementById('productImage').src = data.image_url;
+        document.getElementById('productImageContainer').classList.remove('hidden');
+        document.getElementById('currentPrice').textContent = data.current_price;
+        document.getElementById('predictedPrice').textContent = data.predicted_price;
+        document.getElementById('suggestion').textContent = data.suggestion;
+        document.getElementById('result').classList.remove('hidden');
+
+        const ctx = document.getElementById('priceChart').getContext('2d');
+        const gradient = ctx.createLinearGradient(0, 0, 0, 400);
+        gradient.addColorStop(0, 'rgba(52, 152, 219, 0.4)');
+        gradient.addColorStop(1, 'rgba(52, 152, 219, 0)');
+
+        new Chart(ctx, {
+          type: 'line',
+          data: {
+            labels: data.dates,
+            datasets: [{
+              label: 'Price (₹)',
+              data: data.prices,
+              fill: true,
+              borderColor: '#3498db',
+              backgroundColor: gradient,
+              borderWidth: 3,
+              tension: 0.4,
+              pointBackgroundColor: '#3498db',
+              pointRadius: 5,
+              pointHoverRadius: 8
+            }]
+          },
+          options: {
+            responsive: true,
+            plugins: {
+              legend: {
+                labels: {
+                  color: '#2c3e50',
+                  font: { size: 14, weight: 'bold' }
+                }
+              },
+              tooltip: {
+                backgroundColor: '#2c3e50',
+                titleColor: '#ffffff',
+                bodyColor: '#ffffff',
+                padding: 10,
+                cornerRadius: 8
+              }
+            },
+            scales: {
+              x: {
+                title: {
+                  display: true,
+                  text: 'Date',
+                  color: '#2c3e50',
+                  font: { size: 16, weight: 'bold' }
+                },
+                ticks: { color: '#2c3e50' },
+                grid: { color: '#ecf0f1' }
+              },
+              y: {
+                title: {
+                  display: true,
+                  text: 'Price (₹)',
+                  color: '#2c3e50',
+                  font: { size: 16, weight: 'bold' }
+                },
+                ticks: { color: '#2c3e50' },
+                grid: { color: '#ecf0f1' }
+              }
+            },
+            animation: {
+              duration: 1200,
+              easing: 'easeOutBounce'
+            }
+          }
+        });
+
+      } catch (err) {
+        console.error(err);
+        alert('Something went wrong!');
+        document.getElementById('loadingSpinner').classList.add('hidden');
+      }
+    });
+  </script>
+</body>
+</html>

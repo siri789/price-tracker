@@ -1,0 +1,331 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap');
+
+/* Theme Variables */
+:root {
+    --bg: rgba(255, 255, 255, 0.85);
+    --text: #2c3e50;
+    --card: rgba(255, 255, 255, 0.95);
+    --accent: #3498db;
+}
+
+.dark-mode {
+    --bg: rgba(18, 18, 18, 0.9);
+    --text: #f5f6f7;
+    --card: rgba(30, 30, 30, 0.95);
+    --accent: #00bcd4;
+}
+
+/* Global Reset */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Inter', sans-serif;
+}
+
+body {
+    background: #8ab8bd;
+    background-position: center;
+    background-attachment: fixed;
+    color: var(--text);
+    min-height: 100vh;
+    padding: 20px;
+}
+
+/* Container Card */
+.container {
+    max-width: 750px;
+    margin: 40px auto;
+    background: var(--card);
+    border-radius: 16px;
+    padding: 40px 30px;
+    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.1);
+    backdrop-filter: blur(10px);
+    transition: background 0.3s ease, color 0.3s ease;
+}
+
+/* Header */
+h1 {
+    font-size: 30px;
+    color: var(--text);
+    margin-bottom: 25px;
+    text-align: center;
+}
+
+/* Form Styling */
+form {
+    margin-bottom: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+input[type="text"] {
+    padding: 14px;
+    font-size: 16px;
+    border: 1px solid #ccc;
+    border-radius: 10px;
+    background: var(--card);
+    color: var(--text);
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+input[type="text"]:focus {
+    border-color: var(--accent);
+    box-shadow: 0 0 5px rgba(52, 152, 219, 0.4);
+    outline: none;
+}
+
+button {
+    padding: 14px;
+    background: linear-gradient(145deg, var(--accent), #2980b9);
+    color: white;
+    font-size: 16px;
+    font-weight: bold;
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+/* Toggle Switch (Dark Mode) */
+.theme-toggle {
+    position: absolute;
+    top: 25px;
+    right: 25px;
+}
+
+.switch {
+    position: relative;
+    display: inline-block;
+    width: 50px;
+    height: 28px;
+}
+
+.switch input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+
+.slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: #ccc;
+    transition: 0.4s;
+    border-radius: 34px;
+}
+
+.slider:before {
+    position: absolute;
+    content: "";
+    height: 20px;
+    width: 20px;
+    left: 4px;
+    bottom: 4px;
+    background-color: white;
+    transition: 0.4s;
+    border-radius: 50%;
+}
+
+input:checked + .slider {
+    background-color: var(--text);
+}
+
+input:checked + .slider:before {
+    transform: translateX(22px);
+}
+
+/* Spinner */
+.spinner {
+    width: 45px;
+    height: 45px;
+    border: 4px solid #ddd;
+    border-top-color: var(--accent);
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+    margin: 0 auto;
+}
+
+@keyframes spin {
+    to { transform: rotate(360deg); }
+}
+
+/* Results Section */
+#result {
+    margin-top: 30px;
+    background: var(--card);
+    border-radius: 12px;
+    padding: 30px;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.05);
+    animation: fadeIn 1s ease;
+}
+
+#productTitle {
+    font-size: 20px;
+    font-weight: 600;
+    margin: 20px 0 10px;
+    color: var(--text);
+}
+
+#productImage {
+    max-width: 100%;
+    border-radius: 12px;
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.1);
+    margin: 10px 0 25px;
+}
+
+canvas {
+    margin: 25px auto;
+    max-width: 100%;
+    background-color: var(--card);
+    border-radius: 8px;
+    padding: 10px;
+    box-shadow: 0 0 10px rgba(52, 152, 219, 0.08);
+}
+
+p {
+    margin: 12px 0;
+    font-size: 17px;
+    line-height: 1.6;
+    color: var(--text);
+}
+
+p strong {
+    color: var(--text);
+}
+
+.hidden {
+    display: none;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* Responsive */
+@media (max-width: 600px) {
+    .container {
+        padding: 30px 20px;
+    }
+
+    h1 {
+        font-size: 24px;
+    }
+
+    button {
+        width: 100%;
+    }
+}
+
+#productImageContainer {
+    text-align: center;
+    margin: 20px 0;
+}
+
+#productImage {
+    max-width: 100%;
+    width: auto;
+    height: auto;
+    display: inline-block;
+    border-radius: 12px;
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.1);
+}
+
+#chartModal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0,0,0,0.85);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+    padding: 20px;
+  }
+  
+  #chartModal canvas {
+    background: #fff;
+    border-radius: 12px;
+    max-width: 90%;
+    max-height: 80%;
+    box-shadow: 0 0 20px rgba(0,0,0,0.4);
+  }
+  
+  #chartModal.hidden {
+    display: none;
+  }
+
+  #productTitle {
+    font-size: 24px;
+    font-weight: 700;
+    color: var(--accent);
+    text-align: center;
+    margin: 20px 0 25px;
+    position: relative;
+    animation: fadeInUp 0.8s ease;
+}
+
+#productTitle::after {
+    content: '';
+    display: block;
+    width: 60px;
+    height: 3px;
+    background: var(--accent);
+    margin: 8px auto 0;
+    border-radius: 4px;
+}
+
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(8px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+#productTitle {
+    background: linear-gradient(90deg, #ecfaff, #e0f7fa);
+    padding: 10px 15px;
+    border-radius: 10px;
+    display: inline-block;
+}
+input[type="password"],
+input[type="text"] {
+    padding: 12px;
+    font-size: 16px;
+    border-radius: 10px;
+    border: 1px solid #ccc;
+    margin-bottom: 12px;
+}
+
+input[type="text"],
+input[type="email"] {
+    padding: 14px;
+    font-size: 16px;
+    border: 1px solid #ccc;
+    border-radius: 10px;
+    background: var(--card);
+    color: var(--text);
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+/* style.css */
+.logo-wrapper {
+    text-align: center;
+    margin-bottom: 30px;
+}
